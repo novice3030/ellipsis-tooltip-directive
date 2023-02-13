@@ -37,7 +37,6 @@ export class EllipsisTooltipDirective implements AfterViewInit {
       const width = clonedElement.offsetWidth;
       this.renderer.removeChild(element.parentNode, clonedElement);
       this.cacheService.addToCache(text, width);
-      this.cacheService.addToCache(text, width);
       return width;
     }
   }
