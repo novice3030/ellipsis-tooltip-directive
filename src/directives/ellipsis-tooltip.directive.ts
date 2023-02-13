@@ -5,8 +5,6 @@ import { CacheService } from 'src/services/cache.service';
   selector: '[ellipsisTooltip]',
 })
 export class EllipsisTooltipDirective implements AfterViewInit {
-  private cache = new Map<string, string>();
-
   constructor(
     private el: ElementRef,
     private renderer: Renderer2,
@@ -17,13 +15,15 @@ export class EllipsisTooltipDirective implements AfterViewInit {
     const element = this.el.nativeElement;
     const text = element.innerText;
     const maxWidth = element.offsetWidth;
-    let fullTextWidth = this.getFullTextWidth(element, text);
+    let fullTextWidth = this.cacheService.getCache(text);
+    if (!fullTextWidth) {
+      fullTextWidth = this.getFullTextWidth(element, text);
+      this.cacheService.addToCache(text, fullTextWidth);
+    }
     if (fullTextWidth > maxWidth) {
       this.renderer.setAttribute(element, 'title', text);
       this.renderer.setStyle(element, 'text-overflow', 'ellipsis');
       this.renderer.setStyle(element, 'overflow', 'hidden');
-    } else if (this.cache.has(text)) {
-      this.renderer.setProperty(element, 'innerText', this.cache.get(text));
     }
   }
 
