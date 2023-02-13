@@ -32,7 +32,7 @@ export class EllipsisTooltipDirective implements AfterViewInit {
       this.renderer.setStyle(clonedElement, 'position', 'absolute');
       this.renderer.setStyle(clonedElement, 'left', '-9999px');
       this.renderer.setProperty(clonedElement, 'innerText', text);
-      this.renderer.setProperty(clonedElement, 'style', 'white-space: normal');
+      this.renderer.setStyle(clonedElement, 'width', 'auto');
       this.renderer.appendChild(element.parentNode, clonedElement);
       const width = clonedElement.offsetWidth;
       this.renderer.removeChild(element.parentNode, clonedElement);
