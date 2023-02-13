@@ -18,7 +18,6 @@ export class EllipsisTooltipDirective implements AfterViewInit {
     const text = element.innerText;
     const maxWidth = element.offsetWidth;
     let fullTextWidth = this.getFullTextWidth(element, text);
-    console.log(fullTextWidth);
     if (fullTextWidth > maxWidth) {
       this.renderer.setAttribute(element, 'title', text);
       this.renderer.setStyle(element, 'text-overflow', 'ellipsis');
