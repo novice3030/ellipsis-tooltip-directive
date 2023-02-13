@@ -15,11 +15,7 @@ export class EllipsisTooltipDirective implements AfterViewInit {
     const element = this.el.nativeElement;
     const text = element.innerText;
     const maxWidth = element.offsetWidth;
-    let fullTextWidth = this.cacheService.getCache(text);
-    if (!fullTextWidth) {
-      fullTextWidth = this.getFullTextWidth(element, text);
-      this.cacheService.addToCache(text, fullTextWidth);
-    }
+    let fullTextWidth = this.getFullTextWidth(element, text);
     if (fullTextWidth > maxWidth) {
       this.renderer.setAttribute(element, 'title', text);
       this.renderer.setStyle(element, 'text-overflow', 'ellipsis');
@@ -31,16 +27,18 @@ export class EllipsisTooltipDirective implements AfterViewInit {
     const cachedWidth = this.cacheService.getCache(text);
     if (cachedWidth) {
       return cachedWidth;
+    } else {
+      const clonedElement = element.cloneNode() as HTMLElement;
+      this.renderer.setStyle(clonedElement, 'position', 'absolute');
+      this.renderer.setStyle(clonedElement, 'left', '-9999px');
+      this.renderer.setProperty(clonedElement, 'innerText', text);
+      this.renderer.setProperty(clonedElement, 'style', 'white-space: normal');
+      this.renderer.appendChild(element.parentNode, clonedElement);
+      const width = clonedElement.offsetWidth;
+      this.renderer.removeChild(element.parentNode, clonedElement);
+      this.cacheService.addToCache(text, width);
+      this.cacheService.addToCache(text, width);
+      return width;
     }
-    const clonedElement = element.cloneNode() as HTMLElement;
-    this.renderer.setStyle(clonedElement, 'position', 'absolute');
-    this.renderer.setStyle(clonedElement, 'left', '-9999px');
-    this.renderer.setProperty(clonedElement, 'innerText', text);
-    this.renderer.setProperty(clonedElement, 'style', 'white-space: normal');
-    this.renderer.appendChild(element.parentNode, clonedElement);
-    const width = clonedElement.offsetWidth;
-    this.renderer.removeChild(element.parentNode, clonedElement);
-    this.cacheService.addToCache(text, width);
-    return width;
   }
 }
